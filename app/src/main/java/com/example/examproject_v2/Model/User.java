@@ -1,6 +1,12 @@
 package com.example.examproject_v2.Model;
 
-public class User {
+import android.content.Intent;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.example.examproject_v2.Service.UserService;
+
+public class User implements Parcelable {
 
     private String name;
     private String email;
@@ -22,6 +28,29 @@ public class User {
         this.age = age;
     }
 
+
+    protected User(Parcel in) {
+        name = in.readString();
+        email = in.readString();
+        adress = in.readString();
+        secretQuestion = in.readString();
+        secretAnswer = in.readString();
+        department = in.readString();
+        zip = in.readInt();
+        age = in.readInt();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -90,5 +119,22 @@ public class User {
 
     public User(){
 
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(email);
+        dest.writeString(adress);
+        dest.writeString(secretQuestion);
+        dest.writeString(secretAnswer);
+        dest.writeString(department);
+        dest.writeInt(zip);
+        dest.writeInt(age);
     }
 }

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ExamProject_v2</string>
+    <string name="back_button">BACK</string>
+    <string name="cancel_button">CANCEL</string>
+    <string name="next_button">NEXT</string>
+    <string name="confirm_button">CONFIRM</string>
+    <string name="checkBillsText">Nedenfor kan du se dine faste betalinger. Du kan slette en betaling ved at vælge den og trykke "Delete".</string>
 </resources>

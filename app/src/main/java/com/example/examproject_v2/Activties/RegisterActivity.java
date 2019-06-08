@@ -50,32 +50,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void createAccount (String email, String password){
-        Log.d(TAG, "createAccount:" + email);
+        Log.d(TAG, "trying to create account: " + email);
+
         if (!validateForm()) {
             return;
-        }
-
-        String zip = zipText.getText().toString();
-        int finalZip = Integer.parseInt(zip);
-        String age = ageInput.getText().toString();
-        int finalAge = Integer.parseInt(age);
-
-        String createEmail = emailText.getText().toString();
-        String spinnerText = questionSpinner.getSelectedItem().toString();
-
-        //TODO: Account and user is created even if there was an error... the createNew is outside of the scope of the validating completeListener.
-
-        UserService createNew = new UserService();
-
-        createNew.createUser(nameText.getText().toString(),createEmail,adressText.getText().toString(),spinnerText, secretQuestionAnswerText.getText().toString(), createNew.citySelect(finalZip),finalZip, finalAge);
-        createNew.createAccount("Savings", 0.0, false, createEmail, finalZip);
-        createNew.createAccount("Default", 0.0, true, createEmail, finalZip);
-        createNew.createAccount("Buisness", 0.0, false, createEmail, finalZip);
-        createNew.createAccount("Budget", 0.0, true, createEmail, finalZip);
-        if (finalAge >= 77){
-            createNew.createAccount("Pension", 0.0, true, createEmail, finalZip);
-        } else {
-            createNew.createAccount("Pension", 0.0, false, createEmail, finalZip);
         }
 
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -83,13 +61,30 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+                            UserService createNew = new UserService();
+                            // create user success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
+
                             FirebaseUser user = mAuth.getCurrentUser();
+                            String createEmail = emailText.getText().toString();
+                            String spinnerText = questionSpinner.getSelectedItem().toString();
+                            int zip = Integer.parseInt(zipText.getText().toString());
+                            int age = Integer.parseInt(ageInput.getText().toString());
+
+                            createNew.createUser(nameText.getText().toString(),createEmail,adressText.getText().toString(),spinnerText, secretQuestionAnswerText.getText().toString(), createNew.citySelect(zip),zip, age);
+                            createNew.createAccount("Savings", 0.0, false, createEmail, zip);
+                            createNew.createAccount("Default", 0.0, true, createEmail, zip);
+                            createNew.createAccount("Buisness", 0.0, false, createEmail, zip);
+                            createNew.createAccount("Budget", 0.0, true, createEmail, zip);
+                            if (age >= 77){
+                                createNew.createAccount("Pension", 0.0, true, createEmail, zip);
+                            } else {
+                                createNew.createAccount("Pension", 0.0, false, createEmail, zip);
+                            }
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Log.w(TAG, "createUserWithEmail:failure: " + task.getException());
                             Toast.makeText(RegisterActivity.this, "Authentication failed",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
@@ -168,7 +163,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    public void onClick(View view){
+    public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.registerRegisterButton) {
             createAccount(emailText.getText().toString(), passwordText.getText().toString());
@@ -204,4 +199,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(RegisterActivity.this, "Cancelling registration", Toast.LENGTH_LONG).show();
+        super.onBackPressed();
+    }
 }

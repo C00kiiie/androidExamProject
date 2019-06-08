@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activties.OverheadPay"></activity>
+        <activity android:name=".Activties.MenuActivity"></activity>
+        <activity android:name=".Activties.OverheadPay" />
         <activity android:name=".Activties.PaymentActivity" />
         <activity android:name=".Activties.TransferActivity3" />
         <activity android:name=".Activties.TransferActivity2" />

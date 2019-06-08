@@ -8,9 +8,6 @@ import com.example.examproject_v2.Model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Calendar;
-import java.util.Date;
-
 public class UserService {
     private final String TAG = "UserService";
     FirebaseFirestore db = FirebaseFirestore.getInstance();

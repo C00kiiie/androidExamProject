@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#93BEDF"
+    android:background="@drawable/bgapps"
     tools:context=".Activties.TransferActivity2">
 
     <Button
         android:id="@+id/transfer2NextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="138dp"
-        android:onClick="onClick"
-        android:text="Next"
+        android:layout_width="180dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="48dp"
         android:background="@drawable/btn_rounded_cornors"
+        android:onClick="onClick"
+        android:text="@string/next_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/transfer2ReceiverText" />
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxTransfer" />
 
     <Spinner
         android:id="@+id/transfer2Spinner"
@@ -46,14 +46,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="59dp"
+        android:background="@drawable/txt_rounded_cornors"
+        android:drawableStart="@drawable/ic_email_black_24dp"
+        android:drawableLeft="@drawable/ic_email_black_24dp"
+        android:drawablePadding="5dp"
         android:ems="10"
         android:hint="Email of recipent"
         android:inputType="textEmailAddress"
         android:padding="10dp"
-        android:drawableStart="@drawable/ic_email_black_24dp"
-        android:drawableLeft="@drawable/ic_email_black_24dp"
-        android:drawablePadding="5dp"
-        android:background="@drawable/txt_rounded_cornors"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/transfer2Spinner" />
@@ -63,15 +63,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:background="@drawable/txt_rounded_cornors"
+        android:drawableStart="@drawable/ic_attach_money_black_24dp"
+        android:drawableLeft="@drawable/ic_attach_money_black_24dp"
+        android:drawablePadding="5dp"
         android:ems="10"
         android:hint="Amount"
         android:inputType="number"
         android:padding="10dp"
-        android:drawableStart="@drawable/ic_attach_money_black_24dp"
-        android:drawableLeft="@drawable/ic_attach_money_black_24dp"
-        android:drawablePadding="5dp"
-        android:background="@drawable/txt_rounded_cornors"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/transfer2ReceiverText" />
+
+    <CheckBox
+        android:id="@+id/checkBoxTransfer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="41dp"
+        android:checked="false"
+        android:onClick="onClick"
+        android:text="Confirm your human"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/transfer2Amount" />
 </android.support.constraint.ConstraintLayout>

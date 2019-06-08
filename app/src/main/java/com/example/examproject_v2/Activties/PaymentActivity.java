@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.DocumentsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -22,6 +22,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.examproject_v2.Model.PaymentParcelable;
 import com.example.examproject_v2.R;
 import com.example.examproject_v2.Service.AccountService;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,7 +30,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -40,17 +40,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class PaymentActivity extends AppCompatActivity{
+public class PaymentActivity extends AppCompatActivity {
     private final String TAG = "PaymentActivity";
+
     TextView paymentDate;
     EditText kontoNummer, paymentAmount, billName;
     Spinner accountSpinner;
+    CheckBox checkBox;
     Switch dateSwitch;
-    boolean check = false;
     AccountService accService = new AccountService();
+    private int companyNumber, amount;
+    private String fromSpinnerText, bil, dateText;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private PaymentParcelable parcelable = new PaymentParcelable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,46 +111,85 @@ public class PaymentActivity extends AppCompatActivity{
     public void onClick(View view) {
         int i = view.getId();
 
-        if (dateSwitch.isChecked() && i == R.id.paymentConfirmButton) {
+        if (checkBox.isChecked()) {
+
+            if (!validateForm()) {
+                checkBox.setChecked(false);
+                return;
+            }
+
+            amount = Integer.parseInt(paymentAmount.getText().toString());
+            String fromSpinnerText = accountSpinner.getSelectedItem().toString();
+            companyNumber = Integer.parseInt(kontoNummer.getText().toString());
+
+            if (accService.balanceChecker(amount, fromSpinnerText)){
+                    Log.d(TAG, "User Exists");
+                    Log.d(TAG, "checked if amount can be transfered");
+            }
+
+        }
+
+        if (i == R.id.paymentConfirmButton){
+            if (!validateForm()) {
+                return;
+            }
+        }
+
+        if (i == R.id.paymentConfirmButton && checkBox.isChecked()){
+
+            final Intent intent = new Intent(this, NemIdActivity.class);
 
             if (!validateForm()) {
                 return;
             }
 
-            if (check == true) {
-                int value = Integer.parseInt(kontoNummer.getText().toString());
-                int amount = Integer.parseInt(paymentAmount.getText().toString());
-                String bil = billName.getText().toString();
-                String fromSpinnerText = accountSpinner.getSelectedItem().toString();
-                String dateText = paymentDate.getText().toString();
-                accService.payAuto(fromSpinnerText,value,amount, dateText, bil);
-                Intent intent = new Intent(this, NemIdActivity.class);
-                startActivity(intent);
-            }
+            companyNumber = Integer.parseInt(kontoNummer.getText().toString());
+            amount = Integer.parseInt(paymentAmount.getText().toString());
+            bil = billName.getText().toString();
+            dateText = paymentDate.getText().toString();
+            fromSpinnerText = accountSpinner.getSelectedItem().toString();
 
+            CollectionReference companyRef = db.collection("Companies");
+            Query query = companyRef.whereEqualTo("companyNumber", companyNumber);
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()){
+                        for(DocumentSnapshot documentSnapshot : task.getResult()){
+                            int company = documentSnapshot.getLong("companyNumber").intValue();
+                            if(company == companyNumber){
+                                if (accService.balanceChecker(amount, fromSpinnerText)){
 
-        } else if (i == R.id.cancelPayment) {
-            Log.d(TAG, "canceling payment");
-            Toast.makeText(PaymentActivity.this, "Canceling payment",Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, OverviewActivity.class);
-            startActivity(intent);
+                                    if (dateSwitch.isChecked()){
+                                        parcelable.setBillName(bil);
+                                        parcelable.setDateText(dateText);
+                                        intent.putExtra("bill", parcelable);
+                                        Log.d(TAG, "Trying to set up autobilling. senting to NemId, to finish");
 
-        } else if (i == R.id.paymentConfirmButton){
-            if (!validateForm()) {
-                return;
-            }
-
-            if (check == true){
-                int value = Integer.parseInt(kontoNummer.getText().toString());
-                int amount = Integer.parseInt(paymentAmount.getText().toString());
-                String fromSpinnerText = accountSpinner.getSelectedItem().toString();
-
-                Log.d(TAG, "confirmButton clicked. Trying to send " + amount + " from: " + fromSpinnerText + ". To: " + value);
-                accService.pay(fromSpinnerText, value, amount);
-                Intent intent = new Intent(this, NemIdActivity.class);
-                startActivity(intent);
-            }
-
+                                    } else if (!dateSwitch.isChecked()){
+                                        Log.d(TAG, "Trying to pay bill. senting to NemId, to finish");
+                                    }
+                                    Log.d(TAG, "transfer amount is good. Senting to NemId");
+                                    parcelable.setAmount(amount);
+                                    parcelable.setAccountSpinner(fromSpinnerText);
+                                    parcelable.setKontoNummer(companyNumber);
+                                    intent.putExtra("bill", parcelable);
+                                    startActivity(intent);
+                                } else {
+                                    Log.d(TAG, "Dont have amount to transfer");
+                                    Toast.makeText(PaymentActivity.this,"You dont have " + amount + " to transfer", Toast.LENGTH_LONG).show();
+                                    checkBox.setChecked(false);
+                                }
+                            }
+                        }
+                    } if(task.getResult().size() == 0 ){
+                        Log.d(TAG, "Company not Exists");
+                        Toast.makeText(PaymentActivity.this, "Company does not exists", Toast.LENGTH_SHORT).show();
+                        //You can store new user information here
+                        checkBox.setChecked(false);
+                    }
+                }
+            });
         }
     }
 
@@ -207,6 +250,7 @@ public class PaymentActivity extends AppCompatActivity{
         dateSwitch = findViewById(R.id.paymentSwitch);
         billName = findViewById(R.id.paymentBillName);
         paymentDate = findViewById(R.id.paymentDate);
+        checkBox = findViewById(R.id.checkBoxPayment);
     }
 
     private boolean validateForm () {
@@ -218,7 +262,6 @@ public class PaymentActivity extends AppCompatActivity{
             valid = false;
         } else {
             kontoNummer.setError(null);
-            companyChecker();
         }
 
         String amount = paymentAmount.getText().toString();
@@ -227,6 +270,13 @@ public class PaymentActivity extends AppCompatActivity{
             valid = false;
         } else {
             paymentAmount.setError(null);
+        }
+
+        if (!checkBox.isChecked()){
+            checkBox.setError("Required");
+            valid = false;
+        } else {
+            checkBox.setError(null);
         }
 
         if (dateSwitch.isChecked()){
@@ -250,37 +300,12 @@ public class PaymentActivity extends AppCompatActivity{
             }
         }
 
-
-
         return valid;
     }
 
-    public void companyChecker(){
-        final int konto = Integer.parseInt(kontoNummer.getText().toString());
-        CollectionReference usersRef = db.collection("Companies");
-        Query query = usersRef.whereEqualTo("companyNumber", konto);
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(DocumentSnapshot documentSnapshot : task.getResult()){
-                        int user = documentSnapshot.getLong("companyNumber").intValue();
-
-                        if(user == konto){
-                            Log.d(TAG, "Company Exists");
-                            check = true;
-                        }
-                    }
-                }
-                if(task.getResult().size() == 0 ){
-                    Log.d(TAG, "Company does not exist");
-                    Toast.makeText(PaymentActivity.this, "company number does not exists", Toast.LENGTH_SHORT).show();
-                    //You can store new user information here
-
-                }
-            }
-        });
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(PaymentActivity.this, "Canceling payment",Toast.LENGTH_LONG).show();
+        super.onBackPressed();
     }
-
-
 }

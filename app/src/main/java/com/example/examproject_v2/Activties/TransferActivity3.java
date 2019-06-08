@@ -49,25 +49,28 @@ public class TransferActivity3 extends AppCompatActivity {
 
     public void onClick(View view){
         int i = view.getId();
+
         Intent intent1 = getIntent();
         String toAccount = recipientAccounts.getSelectedItem().toString();
         String value = intent1.getStringExtra("amount");
         int finalValue = Integer.parseInt(value);
         String fromAccount = intent1.getStringExtra("fromAccount");
         String email = intent1.getStringExtra("receiverEmail");
+
         if (i == R.id.tranfer3ConfirmButton) {
-            if (email.equalsIgnoreCase(mAuth.getCurrentUser().getEmail()) && (! toAccount.equalsIgnoreCase("Pension"))) {
-                accService.transfer(fromAccount, toAccount, recipientEmail.getText().toString(), finalValue);
-                Intent intent = new Intent(this, OverviewActivity.class);
-                startActivity(intent);
-            } else {
+
                 accService.transfer(fromAccount, toAccount, email, finalValue);
-                Intent intent = new Intent(this, NemIdActivity.class);
-                startActivity(intent);
-            }
-        } else if (i == R.id.cancelTransfer){
-            Toast.makeText(this, "Cancelling transfer", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, OverviewActivity.class);
+                Toast.makeText(this, "You've sent money to: " + email, Toast.LENGTH_SHORT).show();
+
+
+            Log.d(TAG, "onClick: confirmButton, you've transfered money");
+            Intent intent = new Intent(this, MenuActivity.class);
+            startActivity(intent);
+
+        } else if (i == R.id.cancelTransfer) {
+            Log.d(TAG, "backing");
+            Toast.makeText(TransferActivity3.this, "Canceling transfer",Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, MenuActivity.class);
             startActivity(intent);
         }
     }

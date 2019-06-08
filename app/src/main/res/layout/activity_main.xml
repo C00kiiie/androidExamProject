@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#93BEDF"
+    android:background="@drawable/bgapps"
     tools:context=".Activties.MainActivity">
 
     <EditText
@@ -13,10 +13,10 @@
         android:layout_height="47dp"
         android:layout_marginTop="36dp"
         android:background="@drawable/txt_rounded_cornors"
-        android:ems="10"
         android:drawableStart="@drawable/ic_lock_black_24dp"
         android:drawableLeft="@drawable/ic_lock_black_24dp"
         android:drawablePadding="5dp"
+        android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
         android:padding="10dp"
@@ -28,70 +28,76 @@
         android:id="@+id/emailText"
         android:layout_width="328dp"
         android:layout_height="47dp"
-        android:layout_marginTop="92dp"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
+        android:layout_marginTop="35dp"
         android:background="@drawable/txt_rounded_cornors"
-        android:padding="10dp"
         android:drawableStart="@drawable/ic_email_black_24dp"
         android:drawableLeft="@drawable/ic_email_black_24dp"
         android:drawablePadding="5dp"
+        android:ems="10"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <Button
         android:id="@+id/loginButton"
-        android:layout_width="120dp"
-        android:layout_height="49dp"
-        android:layout_marginStart="66dp"
-        android:layout_marginLeft="66dp"
-        android:layout_marginTop="54dp"
+        android:layout_width="146dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="26dp"
         android:background="@drawable/btn_rounded_cornors"
         android:onClick="onClick"
         android:text="Login"
-        android:textColor="#DCEDFF"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordText" />
+        app:layout_constraintTop_toBottomOf="@+id/passResetButton" />
 
     <Button
         android:id="@+id/registerButton"
-        android:layout_width="120dp"
-        android:layout_height="49dp"
-        android:layout_marginStart="39dp"
-        android:layout_marginLeft="39dp"
-        android:layout_marginTop="54dp"
+        android:layout_width="122dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="33dp"
         android:background="@drawable/btn_rounded_cornors"
-        android:textColor="#DCEDFF"
         android:onClick="onClick"
         android:text="Register"
-        app:layout_constraintStart_toEndOf="@+id/loginButton"
-        app:layout_constraintTop_toBottomOf="@+id/passwordText" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 
     <Button
         android:id="@+id/passResetButton"
+        style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="81dp"
-        android:textStyle="bold"
-        android:textSize="20dp"
+        android:layout_marginTop="6dp"
         android:onClick="onClick"
-        android:text="Reset password"
+        android:text="Forgot you password? Type in email and press here"
+        android:textSize="10dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginButton"
-        style="?android:attr/borderlessButtonStyle"/>
+        app:layout_constraintTop_toBottomOf="@+id/passwordText" />
 
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="73dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="157dp"
-        android:layout_marginLeft="157dp"
-        android:layout_marginTop="64dp"
-        android:text="KEA Bank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Bulldog Banking"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bulldog" />
 </android.support.constraint.ConstraintLayout>

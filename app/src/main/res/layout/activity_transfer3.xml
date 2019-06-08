@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#93BEDF"
+    android:background="@drawable/bgapps"
     tools:context=".Activties.TransferActivity3">
 
     <Spinner
@@ -27,14 +27,13 @@
 
     <Button
         android:id="@+id/tranfer3ConfirmButton"
-        android:layout_width="151dp"
+        android:layout_width="180dp"
         android:layout_height="51dp"
-        android:layout_marginTop="120dp"
-        android:onClick="onClick"
-        android:text="Confirm"
+        android:layout_marginTop="124dp"
         android:background="@drawable/btn_rounded_cornors"
+        android:onClick="onClick"
+        android:text="@string/confirm_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/transfer3ReceiverSpinner" />
 
@@ -65,9 +64,9 @@
 
     <Button
         android:id="@+id/cancelTransfer"
-        android:layout_width="103dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="26dp"
+        android:layout_width="140dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="29dp"
         android:background="@drawable/btn_rounded_cornors"
         android:onClick="onClick"
         android:text="@android:string/cancel"
@@ -81,6 +80,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="29dp"
         android:text="TextView"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/transfer3RecipientEmailTextView" />

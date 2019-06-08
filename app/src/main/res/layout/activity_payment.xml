@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#93BEDF"
+    android:background="@drawable/bgapps"
     tools:context=".Activties.PaymentActivity">
 
     <EditText
         android:id="@+id/paymentKontoNummer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/txt_rounded_cornors"
+        android:drawablePadding="5dp"
         android:ems="10"
         android:hint="Konto nummer"
         android:inputType="number"
-        android:background="@drawable/txt_rounded_cornors"
         android:padding="10dp"
-        android:drawablePadding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
@@ -53,6 +53,7 @@
         android:id="@+id/paymentSpinner"
         android:layout_width="173dp"
         android:layout_height="29dp"
+        android:layout_marginTop="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +63,7 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="25dp"
         android:text="Vælg en konto at betal fra"
         android:textSize="20dp"
         android:textStyle="italic"
@@ -73,24 +74,25 @@
 
     <Button
         android:id="@+id/paymentConfirmButton"
-        android:layout_width="200dp"
+        android:layout_width="180dp"
         android:layout_height="51dp"
-        android:layout_marginTop="52dp"
-        android:onClick="onClick"
-        android:text="Betal"
+        android:layout_marginBottom="98dp"
         android:background="@drawable/btn_rounded_cornors"
+        android:onClick="onClick"
+        android:text="@string/confirm_button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/paymentBillName" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView8"
-        android:layout_width="176dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="116dp"
-        android:layout_marginLeft="116dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="42dp"
+        android:gravity="center"
         android:text="Ønsker du IKKE at opsætte automatisk betaling i fremtiden? Slå knappen fra."
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/paymentAmount" />
 
@@ -109,7 +111,7 @@
         android:id="@+id/paymentAmount"
         android:layout_width="134dp"
         android:layout_height="39dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/txt_rounded_cornors"
         android:drawableStart="@drawable/ic_attach_money_black_24dp"
         android:drawableLeft="@drawable/ic_attach_money_black_24dp"
@@ -138,15 +140,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/paymentSwitch" />
 
-    <Button
-        android:id="@+id/cancelPayment"
-        android:layout_width="153dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="35dp"
+    <CheckBox
+        android:id="@+id/checkBoxPayment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
         android:onClick="onClick"
-        android:text="@android:string/cancel"
-        android:background="@drawable/btn_rounded_cornors"
+        android:text="Confirm your human"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/paymentConfirmButton" />
+        app:layout_constraintTop_toBottomOf="@+id/paymentBillName" />
 </android.support.constraint.ConstraintLayout>

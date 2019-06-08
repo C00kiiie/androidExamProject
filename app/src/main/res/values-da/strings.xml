@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ExamProject_v2</string>
+    <string name="back_button">TILBAGE</string>
+    <string name="cancel_button">ABRYD</string>
+    <string name="confirm_button">BEKRÆFT</string>
+    <string name="next_button">VIDERE</string>
+    <string name="checkBillsText">Nedenfor kan du se dine faste betalinger. Du kan slette en betaling ved at vælge den og trykke \"Delete\".</string>
+</resources>

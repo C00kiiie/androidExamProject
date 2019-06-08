@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#93BEDF"
+    android:background="@drawable/bgapps"
     tools:context=".Activties.RegisterActivity">
 
     <EditText
@@ -12,14 +12,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="76dp"
-        android:ems="10"
-        android:hint="Name"
-        android:inputType="textPersonName"
-        android:padding="10dp"
         android:background="@drawable/txt_rounded_cornors"
         android:drawableStart="@drawable/name_24dp"
         android:drawableLeft="@drawable/name_24dp"
         android:drawablePadding="5dp"
+        android:ems="10"
+        android:hint="Name"
+        android:inputType="textPersonName"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,14 +29,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:padding="10dp"
         android:background="@drawable/txt_rounded_cornors"
         android:drawableStart="@drawable/ic_email_black_24dp"
         android:drawableLeft="@drawable/ic_email_black_24dp"
         android:drawablePadding="5dp"
+        android:ems="10"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/registerNameText" />
@@ -45,11 +45,12 @@
         android:id="@+id/registerQuestionSpinner"
         android:layout_width="213dp"
         android:layout_height="47dp"
-
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/secretQuestionText" />
+        app:layout_constraintTop_toBottomOf="@+id/secretQuestionText"
+
+        />
 
     <TextView
         android:id="@+id/secretQuestionText"
@@ -91,12 +92,12 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
+        android:background="@drawable/txt_rounded_cornors"
+        android:drawablePadding="5dp"
         android:ems="10"
         android:hint="Zip"
         android:inputType="number"
         android:padding="10dp"
-        android:background="@drawable/txt_rounded_cornors"
-        android:drawablePadding="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/registerAdressText"
@@ -121,15 +122,13 @@
 
     <Button
         android:id="@+id/registerRegisterButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_width="180dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="38dp"
+        android:background="@drawable/btn_rounded_cornors"
         android:onClick="onClick"
         android:text="Register"
-        android:background="@drawable/btn_rounded_cornors"
-        android:textColor="#DCEDFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/registerPasswordText" />
 

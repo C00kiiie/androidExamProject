@@ -54,20 +54,7 @@ public class OverviewActivity extends AppCompatActivity {
 
     public void onClick(View view){
         int i = view.getId();
-        if(i == R.id.button){
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-        } else if (i == R.id.transferButton){
-            Intent intent2 = new Intent(this, TransferActivity2.class);
-            startActivity(intent2);
-        } else if (i == R.id.payButton){
-            Intent intent3 = new Intent(this, PaymentActivity.class);
-            startActivity(intent3);
-        } else if (i == R.id.overheadPayments){
-            Intent intent4 = new Intent(this, OverheadPay.class);
-            startActivity(intent4);
-        }
+
     }
 
     public void getAccountAmounts(){
@@ -81,21 +68,21 @@ public class OverviewActivity extends AppCompatActivity {
                                 int balance = document.getLong("balance").intValue();
                                 Log.d(TAG, "printing found accounts: " + document.getId() + " has " + document.getLong("balance").intValue() + " money on it!");
                                 if (document.getId().equalsIgnoreCase("Default")){
-                                    defaultText.setText("Default");
-                                    defaultAmount.setText(balance + " kr.");
+                                    defaultText.setText("Default:\n" + balance + " kr.");
+                                    //defaultAmount.setText(balance + " kr.");
                                 } else if (document.getId().equalsIgnoreCase("Savings")){
-                                    savingsText.setText("Savings");
-                                    savingsAmount.setText(balance + " kr.");
+                                    savingsText.setText("Savings:\n" + balance + " kr.");
+                                    //savingsAmount.setText(balance + " kr.");
                                 } else if (document.getId().equalsIgnoreCase("Budget")){
                                     System.out.println(balance);
-                                    budgetText.setText("Budget");
-                                    budgetAmount.setText(balance + " kr.");
+                                    budgetText.setText("Budget:\n" + balance + " kr.");
+                                    //budgetAmount.setText(balance + " kr.");
                                 } else if (document.getId().equalsIgnoreCase("Buisness")){
-                                    buisnessText.setText("Buisness");
-                                    buisnessAmount.setText(balance + " kr.");
+                                    buisnessText.setText("Business:\n" + balance + " kr.");
+                                    //buisnessAmount.setText(balance + " kr.");
                                 } else if (document.getId().equalsIgnoreCase("Pension")){
-                                    pensionText.setText("Pension");
-                                    pensionAmount.setText(balance + " kr.");
+                                    pensionText.setText("Pension:\n" + balance + " kr.");
+                                    //pensionAmount.setText(balance + " kr.");
                                 }
                             }
                         } else {
@@ -125,13 +112,13 @@ public class OverviewActivity extends AppCompatActivity {
                                 Log.d(TAG, "printing hidden accounts: " + document.getId());
                                 if (document.getId().equalsIgnoreCase("Savings")){
                                     savingsText.setVisibility(View.GONE);
-                                    savingsAmount.setVisibility(View.GONE);
+
                                 } else if (document.getId().equalsIgnoreCase("Buisness")){
                                     buisnessText.setVisibility(View.GONE);
-                                    buisnessAmount.setVisibility(View.GONE);
+
                                 } else if (document.getId().equalsIgnoreCase("Pension")){
                                     pensionText.setVisibility(View.GONE);
-                                    pensionAmount.setVisibility(View.GONE);
+
                                 }
                             }
                         }
@@ -172,12 +159,16 @@ public class OverviewActivity extends AppCompatActivity {
 
                     }
 
+                } else {
+                    Log.d(TAG, "onComplete: checking for autopayments, something went wrong: " + task.getException());
                 }
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d(TAG,"onFailure, could get doc's" + e.getMessage());
+
             }
         });
     }
@@ -188,19 +179,9 @@ public class OverviewActivity extends AppCompatActivity {
         savingsText = findViewById(R.id.savingsTextView);
         buisnessText = findViewById(R.id.buisnessTextView);
         pensionText = findViewById(R.id.pensionTextView);
-        defaultAmount = findViewById(R.id.defaultAmount);
-        budgetAmount = findViewById(R.id.budgetAmount);
-        buisnessAmount = findViewById(R.id.buisnessAmount);
-        savingsAmount = findViewById(R.id.savingsAmount);
-        pensionAmount = findViewById(R.id.pensionAmount);
+
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-    }
-
-    @Override
-    public void onBackPressed() {
-        Log.d(TAG, "Cannot go back to login screen, without pressing 'signout' button");
-        return;
     }
 
 }
