@@ -85,9 +85,9 @@ public class RegisterActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure: " + task.getException());
-                            Toast.makeText(RegisterActivity.this, "Authentication failed",
+                            Toast.makeText(RegisterActivity.this, "Authentication failed. Try again",
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+
                         }
                     }
                 });
@@ -107,6 +107,9 @@ public class RegisterActivity extends AppCompatActivity {
         String password = passwordText.getText().toString();
         if (TextUtils.isEmpty(password)) {
             passwordText.setError("Required.");
+            valid = false;
+        } else if (password.length() < 5){
+            passwordText.setError("Need a longer password");
             valid = false;
         } else {
             passwordText.setError(null);
@@ -170,6 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    // validates fields in activity
     public void init(){
         nameText = findViewById(R.id.registerNameText);
         emailText = findViewById(R.id.registerEmailText);

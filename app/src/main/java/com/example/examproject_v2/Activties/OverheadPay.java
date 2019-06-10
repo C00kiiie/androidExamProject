@@ -44,20 +44,22 @@ public class OverheadPay extends AppCompatActivity {
         spinnerSetup();
     }
 
+    // Handles code, when button is pressed.
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.overheadDelete) {
-
+            // this button does not have a function at the moment.
             Toast.makeText(this, "Delete function is temporarely disabled", Toast.LENGTH_SHORT).show();
 
         }
     }
 
+    // validates fields in activity
     public void init() {
         overheadSpinner = findViewById(R.id.overheadSpinner);
     }
 
-    //Spinenr is set up to load in all current AUTO payments from Firebase
+    // spinner is set up to load in all current AUTO payments from Firebase
     public void spinnerSetup() {
 
 

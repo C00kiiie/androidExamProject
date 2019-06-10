@@ -77,6 +77,7 @@ public class PaymentParcelable implements Parcelable {
         amount = in.readInt();
     }
 
+    // generates instances of your Parcelable class from a Parcel.
     public static final Creator<PaymentParcelable> CREATOR = new Creator<PaymentParcelable>() {
         @Override
         public PaymentParcelable createFromParcel(Parcel in) {

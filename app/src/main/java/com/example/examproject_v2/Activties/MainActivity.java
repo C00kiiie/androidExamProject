@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         String password = passwordText.getText().toString();
         if (TextUtils.isEmpty(password)) {
             passwordText.setError("Required.");
+            progressDialog.dismiss();
             valid = false;
         } else {
             passwordText.setError(null);
@@ -146,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //Initializes multiple fields
+    // validates fields in activity
     public void init(){
         emailText = findViewById(R.id.emailText);
         passwordText = findViewById(R.id.passwordText);

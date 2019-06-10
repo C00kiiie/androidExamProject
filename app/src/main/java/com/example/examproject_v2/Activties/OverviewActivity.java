@@ -30,10 +30,12 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
+// This activity handles an account overview, and also checks if the user has any pending autobills.
+
 public class OverviewActivity extends AppCompatActivity {
     private final String TAG = "OverviewActivity";
 
-    TextView buisnessText, savingsText, pensionText, defaultText, budgetText, budgetAmount, defaultAmount, savingsAmount, pensionAmount, buisnessAmount;
+    TextView buisnessText, savingsText, pensionText, defaultText, budgetText;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     AccountService accService = new AccountService();
@@ -43,20 +45,25 @@ public class OverviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
         init();
+
+        // When onCreate is called, then try to run method
         try {
             checkAutoPay();
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         getAccountAmounts();
         hideAccounts();
     }
 
+    // There are no clickable views/widgets in layout.
     public void onClick(View view){
         int i = view.getId();
 
     }
 
+    // Gets current users account balances from Firebase.
     public void getAccountAmounts(){
         db.collection("Users").document(mAuth.getCurrentUser().getEmail()).collection("Accounts").whereEqualTo("status", true)
                 .get()
@@ -101,6 +108,7 @@ public class OverviewActivity extends AppCompatActivity {
 
     }
 
+    // Hides textViews that holds account info, that the current user doesnt have access to.
     public void hideAccounts(){
         db.collection("Users").document(mAuth.getCurrentUser().getEmail()).collection("Accounts").whereEqualTo("status", false)
                 .get()
@@ -126,6 +134,7 @@ public class OverviewActivity extends AppCompatActivity {
                 });
     }
 
+    // Checks if the current user has any pending bills that needs to be paid
     public void checkAutoPay() throws ParseException {
         Log.d(TAG, "Calling checkAutoPay Method()");
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -173,6 +182,7 @@ public class OverviewActivity extends AppCompatActivity {
         });
     }
 
+    // validates fields in activity
     public void init(){
         budgetText = findViewById(R.id.budgetTextView);
         defaultText = findViewById(R.id.defaultTextView);

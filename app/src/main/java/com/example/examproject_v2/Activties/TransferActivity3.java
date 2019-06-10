@@ -116,6 +116,7 @@ public class TransferActivity3 extends AppCompatActivity {
                 });
     }
 
+    // validates fields in activity
     public void init(){
         recipientEmail = findViewById(R.id.transfer3RecipientEmailTextView);
         recipientAccounts = findViewById(R.id.transfer3ReceiverSpinner);

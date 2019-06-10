@@ -150,6 +150,7 @@ public class TransferActivity2 extends AppCompatActivity {
                 });
     }
 
+    // validates fields in activity
     public void init() {
         recipentEmail = findViewById(R.id.transfer2ReceiverText);
         accountSpinner = findViewById(R.id.transfer2Spinner);

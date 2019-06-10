@@ -40,6 +40,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+// In this activity user can set up an auto bill or pay a bill normally.
+// The payment itself will be done in the NemIdActivity. Info will be sent via parcelable.
+
 public class PaymentActivity extends AppCompatActivity {
     private final String TAG = "PaymentActivity";
 
@@ -54,7 +57,7 @@ public class PaymentActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private PaymentParcelable parcelable = new PaymentParcelable();
+    private PaymentParcelable parcelable = new PaymentParcelable(); //parcelable object, Model/PaymentParcelable
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,53 +67,15 @@ public class PaymentActivity extends AppCompatActivity {
         dateSwitch.setChecked(true);
         spinnerSetup();
         switchSetup();
-
-        paymentDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog dialog = new DatePickerDialog(
-                        PaymentActivity.this,
-                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                        mDateSetListener,
-                        year,month,day);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
-            }
-        });
-
-        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month = month + 1;
-                Log.d(TAG, "onDateSet: mm/dd/yyy: " + month + "-" + day + "-" + year);
-                // If month is above 9 DONT add a '0' infront, this is to get date from firebase
-                if (month <= 9 && day <= 9){
-                    String date = "0" + month + "-0" + day + "-" + year;
-                    paymentDate.setText(date);
-                } else if (month <= 9 && day > 9){
-                    String date = "0" + month + "-" + day + "-" + year;
-                    paymentDate.setText(date);
-                } else if (month > 9 && day <= 9){
-                    String date = month + "-0" + day + "-" + year;
-                    paymentDate.setText(date);
-                } else {
-                    String date = month + "-" + day + "-" + year;
-                    paymentDate.setText(date);
-                }
-
-            }
-        };
+        dateSelector();
 
     }
 
+    // onClick handles most of the code, when buttons are pressed.
     public void onClick(View view) {
         int i = view.getId();
 
+        // can only be checked if validateForm returns true.
         if (checkBox.isChecked()) {
 
             if (!validateForm()) {
@@ -157,24 +122,34 @@ public class PaymentActivity extends AppCompatActivity {
                     if(task.isSuccessful()){
                         for(DocumentSnapshot documentSnapshot : task.getResult()){
                             int company = documentSnapshot.getLong("companyNumber").intValue();
+
+                            // checks if company number exists in database
                             if(company == companyNumber){
+
+                                // If the given amount is transferable
                                 if (accService.balanceChecker(amount, fromSpinnerText)){
 
+                                    // If dateswitch is checked, then create a auto bill
                                     if (dateSwitch.isChecked()){
                                         parcelable.setBillName(bil);
                                         parcelable.setDateText(dateText);
-                                        intent.putExtra("bill", parcelable);
+                                        intent.putExtra("bill", parcelable); // puts data inside a parcelable, nameValue = 'bill'
                                         Log.d(TAG, "Trying to set up autobilling. senting to NemId, to finish");
 
+                                    // If dateswitch is not checked, then pay bill normally
                                     } else if (!dateSwitch.isChecked()){
                                         Log.d(TAG, "Trying to pay bill. senting to NemId, to finish");
                                     }
+
+                                    // If bill is auto or not, then sent the amount, company and account as an parcelable to NemIdAct..
                                     Log.d(TAG, "transfer amount is good. Senting to NemId");
                                     parcelable.setAmount(amount);
                                     parcelable.setAccountSpinner(fromSpinnerText);
                                     parcelable.setKontoNummer(companyNumber);
                                     intent.putExtra("bill", parcelable);
-                                    startActivity(intent);
+                                    startActivity(intent); // intent to NemIdAct..
+
+                                // If balanceChecker returned a false, and amount is too high.
                                 } else {
                                     Log.d(TAG, "Dont have amount to transfer");
                                     Toast.makeText(PaymentActivity.this,"You dont have " + amount + " to transfer", Toast.LENGTH_LONG).show();
@@ -182,6 +157,8 @@ public class PaymentActivity extends AppCompatActivity {
                                 }
                             }
                         }
+
+                    // If the company number dosnt exist in database
                     } if(task.getResult().size() == 0 ){
                         Log.d(TAG, "Company not Exists");
                         Toast.makeText(PaymentActivity.this, "Company does not exists", Toast.LENGTH_SHORT).show();
@@ -193,6 +170,7 @@ public class PaymentActivity extends AppCompatActivity {
         }
     }
 
+    // fills out spinner with current users accounts
     public void spinnerSetup() {
 
         final List<String> fbArray = new ArrayList<>();
@@ -226,6 +204,7 @@ public class PaymentActivity extends AppCompatActivity {
         });
     }
 
+    // displays switch, and its actions
     public void switchSetup() {
         dateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -243,6 +222,51 @@ public class PaymentActivity extends AppCompatActivity {
 
     }
 
+    // displays a calender, and set textView to selected date
+    public void dateSelector(){
+        paymentDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        PaymentActivity.this,
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        mDateSetListener,
+                        year,month,day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+
+        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                month = month + 1;
+                Log.d(TAG, "onDateSet: mm/dd/yyy: " + month + "-" + day + "-" + year);
+                // If month is above 9 DONT add a '0' infront, this is to get date from firebase
+                if (month <= 9 && day <= 9){
+                    String date = "0" + month + "-0" + day + "-" + year;
+                    paymentDate.setText(date);
+                } else if (month <= 9 && day > 9){
+                    String date = "0" + month + "-" + day + "-" + year;
+                    paymentDate.setText(date);
+                } else if (month > 9 && day <= 9){
+                    String date = month + "-0" + day + "-" + year;
+                    paymentDate.setText(date);
+                } else {
+                    String date = month + "-" + day + "-" + year;
+                    paymentDate.setText(date);
+                }
+
+            }
+        };
+    }
+
+    // a initializer for views in activity
     public void init(){
         kontoNummer = findViewById(R.id.paymentKontoNummer);
         accountSpinner = findViewById(R.id.paymentSpinner);
@@ -253,6 +277,7 @@ public class PaymentActivity extends AppCompatActivity {
         checkBox = findViewById(R.id.checkBoxPayment);
     }
 
+    // validates fields in activity
     private boolean validateForm () {
         boolean valid = true;
 
@@ -303,7 +328,7 @@ public class PaymentActivity extends AppCompatActivity {
         return valid;
     }
 
-    @Override
+    @Override // disables the back function
     public void onBackPressed() {
         Toast.makeText(PaymentActivity.this, "Canceling payment",Toast.LENGTH_LONG).show();
         super.onBackPressed();

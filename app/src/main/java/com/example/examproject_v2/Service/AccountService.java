@@ -32,7 +32,7 @@ public class AccountService {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference usersRef = db.collection("Users").document(mAuth.getCurrentUser().getEmail()).collection("Accounts");
     public int fromVal, toVal; //fromVal is the value that a user tries to transfer. and a variable that updates the receiving users balance.
-    public boolean amountChecker, companyChecker;
+    public boolean amountChecker;
 
     public void transfer(final String fromAccount, final String toAccount, final String toEmail, final int transferAmount) {
 
@@ -202,7 +202,7 @@ public class AccountService {
                 });
     }
 
-    // checks if the amount that user wants to transfer, is OK. -> TransferAct3 & PaymentAct
+    // checks if the amount that user wants to transfer, is OK. Used in TransferAct3 & PaymentAct
     public boolean balanceChecker(final int transferAmount, final String fromAccount) {
         db.collection("Users").document(mAuth.getCurrentUser().getEmail()).collection("Accounts").document(fromAccount)
                 .get()

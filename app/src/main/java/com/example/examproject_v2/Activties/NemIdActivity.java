@@ -30,7 +30,6 @@ public class NemIdActivity extends AppCompatActivity {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private AccountService accService = new AccountService();
-    boolean check = false; // a boolean to use to validate answer -> checkSecretAnswer()
     TextView nemIdText, nemIdCode;
     EditText nemIdInput;
 
@@ -58,10 +57,30 @@ public class NemIdActivity extends AppCompatActivity {
 
     }
 
-    //Validates the users answer agains their actual answer
-    public void checkSecretAnswer(){
-        Log.d(TAG, "checkSecretAnswer method called");
-        db.collection("Users").document(mAuth.getCurrentUser().getEmail()).get()
+    //Handles pressed items on screen
+    public void onClick(View view){
+        int i = view.getId();
+
+        //set up new intent
+        final Intent menuIntent = new Intent(this, MenuActivity.class);
+
+        //receiving info from a parcelable, from PaymentActivity
+        Intent intent = getIntent();
+
+        // create an instance of a parcelable
+        PaymentParcelable paymentParcelableAuto;
+        paymentParcelableAuto = intent.getParcelableExtra("bill"); //Parcelable key = 'bill'
+        final String nameBill = paymentParcelableAuto.getBillName();
+        final String nameDate = paymentParcelableAuto.getDateText();
+        final String accountSpinner = paymentParcelableAuto.getAccountSpinner();
+        final int amount = paymentParcelableAuto.getAmount();
+        final int companyNumber = paymentParcelableAuto.getKontoNummer();
+
+        // If match between answer and question, pay the bill after pressing nemIdButton
+        if(i == R.id.nemIdButton){
+            Log.d(TAG, "onClick nemIdButton pressed");
+
+            db.collection("Users").document(mAuth.getCurrentUser().getEmail()).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -69,71 +88,39 @@ public class NemIdActivity extends AppCompatActivity {
                             DocumentSnapshot documentSnapshot = task.getResult();
                             String answer = documentSnapshot.getString("secretAnswer");
                             String answerInput = nemIdInput.getText().toString();
+
+                            // If answer matches question
                             if(answer.equalsIgnoreCase(answerInput)){
-                                check = true;
-                                Log.d(TAG, "check have been set to true");
-                                Toast.makeText(NemIdActivity.this, "Answer match! Press confirm again, to finalize payment", Toast.LENGTH_SHORT).show();
+                                if (nameBill == null){
+                                    accService.pay(accountSpinner,companyNumber,amount);
+                                    Toast.makeText(NemIdActivity.this, "Paying bill", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, "Paid bill. Paying: " + amount);
+                                } else if (nameBill != null){
+                                    accService.payAuto(accountSpinner,companyNumber,amount,nameDate,nameBill);
+                                    Toast.makeText(NemIdActivity.this, "Setting up autobilling", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, "Autobilling. Setting up payment due: " + nameDate);
+                                }
+
+                                startActivity(menuIntent);
+                                Log.d(TAG, "Intent after nemIdButton initilized");
+
+                            } else {
+                                // If check fails, display a message to the user.
+                                Log.w(TAG, "secretAnswer:failure", task.getException());
+                                Toast.makeText(NemIdActivity.this, "Secret answer is wrong",
+                                        Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "secretAnswer:failure", task.getException());
-                            Toast.makeText(NemIdActivity.this, "Secret answer is wrong",
-                                    Toast.LENGTH_SHORT).show();
+
                         }
 
                     }
+
                 });
-    }
-
-    //Handles pressed items on screen
-    public void onClick(View view){
-        int i = view.getId();
-
-        //Below 'getExtra' is values sent from PaymentActivity. Used for the actual payment, with an instance of AccountService.
-        Intent intent = getIntent();
-
-        PaymentParcelable paymentParcelableAuto;
-
-        paymentParcelableAuto = intent.getParcelableExtra("bill");
-
-        String nameBill = paymentParcelableAuto.getBillName();
-        String nameDate = paymentParcelableAuto.getDateText();
-        String accountSpinner = paymentParcelableAuto.getAccountSpinner();
-        int amount = paymentParcelableAuto.getAmount();
-        int companyNumber = paymentParcelableAuto.getKontoNummer();
-
-
-
-        if(i == R.id.nemIdButton){
-            Log.d(TAG, "onClick nemIdButton pressed");
-
-            checkSecretAnswer(); // Calls the method to validate input.
-
-            if (check){
-
-                if (nameBill == null){
-                    accService.pay(accountSpinner,companyNumber,amount);
-                    Toast.makeText(this, "Paying bill", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "Paid bill. Paying: " + amount);
-                } else if (nameBill != null){
-                    accService.payAuto(accountSpinner,companyNumber,amount,nameDate,nameBill);
-                    Toast.makeText(this, "Setting up autobilling", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "Autobilling. Setting up payment due: " + nameDate);
-                    }
-
-                Log.d(TAG, "Intent after nemIdButton initilized");
-                Intent intent2 = new Intent(this, MenuActivity.class);
-                startActivity(intent2);
-                check = false;
-
-            } else {
-                Toast.makeText(this, "Answer does not match. Try again!", Toast.LENGTH_SHORT).show();
-                // [ENDS nemIdButton]
-            }
         }
 
     }
 
+    // validates fields in activity
     public void init(){
         nemIdCode = findViewById(R.id.nemIdCode);
         nemIdText = findViewById(R.id.nemIdText);
